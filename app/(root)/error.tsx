@@ -1,10 +1,10 @@
 'use client' // Error boundaries must be Client Components
- 
+
 import { useEffect } from 'react'
- 
+
 export default function ErrorPage({
   error,
-  unstable_retry,
+  unstable_retry
 }: {
   error: Error & { digest?: string }
   unstable_retry: () => void
@@ -13,7 +13,7 @@ export default function ErrorPage({
     // Log the error to an error reporting service
     console.error(error)
   }, [error])
- 
+
   return (
     <div>
       <h2>Something went wrong!</h2>
