@@ -1,10 +1,14 @@
-import React from "react";
+import React from 'react'
 
-export default function RootLayout ({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children
+}: {
+  children: React.ReactNode
+}) {
   return (
     <div>
-      <h1 className="text-center bg-amber-50 text-4xl">ROOT NAVBAR</h1>
+      <h1 className='bg-amber-50 text-center text-4xl'>ROOT NAVBAR</h1>
       {children}
     </div>
-  );
-};
+  )
+}

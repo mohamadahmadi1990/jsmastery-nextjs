@@ -1,0 +1,229 @@
+Absolutely. Save this as your 2026 professional ESLint + Prettier setup for every new Next.js project.
+
+This setup uses:
+
+ESLint   → code quality, Next.js, React, TypeScript problems
+Prettier → formatting
+Prettier Tailwind plugin → Tailwind class sorting
+
+This is the clean approach for modern Next.js because Next now uses ESLint flat config, and Tailwind’s official class-sorting solution is the Prettier plugin. Next documents the eslint-config-next/core-web-vitals and eslint-config-next/typescript flat config setup, and Tailwind’s Prettier plugin documents tailwindStylesheet for Tailwind v4.
+
+Step 1: Create a new Next.js project
+npx create-next-app@latest my-next-app
+
+Recommended answers:
+
+TypeScript? Yes
+ESLint? Yes
+Tailwind CSS? Yes
+src directory? Your choice
+App Router? Yes
+Turbopack? Yes
+Import alias? Yes
+
+Then enter the project:
+
+cd my-next-app
+Step 2: Install Prettier packages
+npm i -D prettier eslint-config-prettier prettier-plugin-tailwindcss
+
+Do not install these for Tailwind v4:
+
+eslint-plugin-tailwindcss
+eslint-config-standard
+
+They caused the compatibility problems you saw.
+
+Step 3: Create or replace eslint.config.mjs
+
+In the project root, create or replace:
+
+eslint.config.mjs
+
+Use this:
+
+import { defineConfig, globalIgnores } from 'eslint/config'
+import nextVitals from 'eslint-config-next/core-web-vitals'
+import nextTs from 'eslint-config-next/typescript'
+import prettier from 'eslint-config-prettier/flat'
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+
+  // Turns off ESLint rules that conflict with Prettier
+  prettier,
+
+  globalIgnores([
+    '.next/**',
+    'out/**',
+    'build/**',
+    'next-env.d.ts'
+  ])
+])
+
+export default eslintConfig
+
+Important: do not put formatting rules like semi, quotes, or comma-dangle in ESLint. Let Prettier handle formatting.
+
+Step 4: Create .prettierrc
+
+In the project root, create:
+
+.prettierrc
+
+Use this:
+
+{
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindStylesheet": "./app/globals.css",
+  "semi": false,
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "trailingComma": "none",
+  "arrowParens": "always"
+}
+
+For Tailwind v4, this line is important:
+
+"tailwindStylesheet": "./app/globals.css"
+
+If your global CSS is somewhere else, change the path.
+
+For example, with src directory:
+
+"tailwindStylesheet": "./src/app/globals.css"
+Step 5: Create .prettierignore
+
+Create:
+
+.prettierignore
+
+Use this:
+
+.next
+out
+build
+node_modules
+package-lock.json
+public
+Step 6: Create .vscode/settings.json
+
+Create this folder and file:
+
+.vscode/settings.json
+
+Use this:
+
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.addMissingImports": "explicit"
+  },
+
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ]
+}
+
+This gives you the professional save behavior:
+
+Ctrl + S
+↓
+Prettier formats code
+Prettier sorts Tailwind classes
+ESLint fixes safe lint issues
+Step 7: Install VS Code extensions
+
+Install these two extensions:
+
+ESLint
+Prettier - Code formatter
+
+The Prettier extension ID is:
+
+esbenp.prettier-vscode
+Step 8: Update package.json scripts
+
+In package.json, use these scripts:
+
+{
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
+  }
+}
+
+If your project already has "dev": "next dev", that is also fine.
+
+Step 9: Run the setup checks
+
+Run:
+
+npm run format
+
+Then:
+
+npm run lint
+
+Both should finish without errors.
+
+Step 10: Test Tailwind class sorting
+
+Create a test component:
+
+export default function Test() {
+  return (
+    <div className="text-white p-4 flex bg-black rounded-lg">
+      Test
+    </div>
+  )
+}
+
+Run:
+
+npm run format
+
+It should become something like:
+
+export default function Test() {
+  return (
+    <div className="flex rounded-lg bg-black p-4 text-white">
+      Test
+    </div>
+  )
+}
+
+That means Tailwind class sorting is working.
+
+Final project structure
+my-next-app/
+├─ app/
+│  ├─ globals.css
+│  └─ page.tsx
+├─ .vscode/
+│  └─ settings.json
+├─ .prettierignore
+├─ .prettierrc
+├─ eslint.config.mjs
+├─ next.config.ts
+├─ package.json
+├─ postcss.config.mjs
+└─ tsconfig.json
+
+The main rule:
+
+ESLint does not format.
+Prettier formats.
+Tailwind class sorting belongs to Prettier.

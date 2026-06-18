@@ -1,17 +1,16 @@
-
 type PageProps = {
   params: Promise<{
-    id: string;
-  }>;
+    id: string
+  }>
   searchParams: Promise<{
-    name?: string;
-    gender?: string;
-  }>;
-};
+    name?: string
+    gender?: string
+  }>
+}
 
 export default async function Page({ params, searchParams }: PageProps) {
-  const { id } = await params;
-  const { name= "N/A", gender="N/A" } = await searchParams;
+  const { id } = await params
+  const { name = 'N/A', gender = 'N/A' } = await searchParams
 
   return (
     <div>
@@ -20,9 +19,8 @@ export default async function Page({ params, searchParams }: PageProps) {
       <p>Tab: {name}</p>
       <p>Sort: {gender}</p>
     </div>
-  );
+  )
 }
-
 
 // ########################################
 
